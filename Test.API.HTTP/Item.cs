@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Azure.Documents;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Test.API.HTTP
 {
-    public class Item
+    public class Item : Resource
     {
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -18,5 +19,8 @@ namespace Test.API.HTTP
 
         [JsonProperty("itemStock")]
         public int ItemStock { get; set; }
+
+        [JsonProperty("partitionKey")]
+        public string PartitionKey { get; set; }
     }
 }
