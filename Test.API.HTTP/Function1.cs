@@ -44,18 +44,22 @@ namespace Test.API.HTTP
         }
 
         [FunctionName("CreateItem")]
-        public static IActionResult CreateItem(
+        public static async Task<IActionResult> CreateItem(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "item")] HttpRequest req,
-            [CosmosDB(
-                databaseName: "tutorial",
-                collectionName: "container1",
-                ConnectionStringSetting = "f39-cosmos-tutorial-string")]out dynamic document,
+            [CosmosDB(ConnectionStringSetting = "f39-cosmos-tutorial-string")] DocumentClient client,
             ILogger log)
         {
             string requestBody = new StreamReader(req.Body).ReadToEnd();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            document = new { itemName = data.itemName, itemPrice = data.itemPrice, itemStock = data.itemStock, partitionKey = "Test"};
-            return new OkResult();
+            Item item = new Item { 
+                ItemName = data.itemName, 
+                ItemPrice = data.itemPrice, 
+                ItemStock = data.itemStock, 
+                PartitionKey = "Test" 
+            };
+            var databaseURI = UriFactory.CreateDocumentCollectionUri("tutorial", "container1");
+            var result = await client.CreateDocumentAsync(databaseURI, item);
+            return new OkObjectResult("Item Created");
         }
 
         [FunctionName("DeleteItem")]
