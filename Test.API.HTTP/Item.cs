@@ -1,15 +1,14 @@
 ﻿using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
+using Nexus.Base.CosmosDBRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Test.API.HTTP
 {
-    public class Item : Resource
+    public class Item : ModelBase
     {
-        [JsonProperty("id")]
-        public string Id { get; set; }
 
         [JsonProperty("itemName")]
         public string ItemName { get; set; }
@@ -19,8 +18,5 @@ namespace Test.API.HTTP
 
         [JsonProperty("itemStock")]
         public int ItemStock { get; set; }
-
-        [JsonProperty("partitionKey")]
-        public string PartitionKey { get; set; }
     }
 }
