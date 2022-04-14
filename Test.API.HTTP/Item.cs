@@ -9,6 +9,8 @@ namespace Test.API.HTTP
 {
     public class Item : ModelBase
     {
+        [JsonProperty("itemCategory")]
+        public string ItemCategory { get; set; }
 
         [JsonProperty("itemName")]
         public string ItemName { get; set; }

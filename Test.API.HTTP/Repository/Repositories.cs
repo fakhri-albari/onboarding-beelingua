@@ -10,7 +10,7 @@ namespace Test.API.HTTP.Repository
     {
         public class ItemRepository: DocumentDBRepository<Item>
         {
-            public ItemRepository(DocumentClient client): base("tutorial", client, partitionProperties: "ItemName")
+            public ItemRepository(DocumentClient client): base("tutorial", client, partitionProperties: "ItemCategory")
             {
 
             }
