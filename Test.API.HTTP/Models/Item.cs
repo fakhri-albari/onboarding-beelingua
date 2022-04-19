@@ -5,20 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Test.API.HTTP
+namespace Test.API.HTTP.Models
 {
     public class Item : ModelBase
     {
-        [JsonProperty("itemCategory")]
+        [JsonProperty("ItemCategory")]
         public string ItemCategory { get; set; }
 
-        [JsonProperty("itemName")]
+        [JsonProperty("ItemName")]
         public string ItemName { get; set; }
 
-        [JsonProperty("itemPrice")]
+        [JsonProperty("ItemPrice")]
         public int ItemPrice { get; set; }
 
-        [JsonProperty("itemStock")]
+        [JsonProperty("ItemStock")]
         public int ItemStock { get; set; }
     }
 }
