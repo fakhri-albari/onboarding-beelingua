@@ -13,7 +13,7 @@ namespace Test.API.HTTP
 {
     public static class Function2
     {
-        [FunctionName("Function2")]
+        [FunctionName("EVHOrderUpdate")]
         public static async Task EVHOrderUpdate(
             [EventHubTrigger("f39-evh-tutorial-orders", Connection = "eventHubNamespace")] EventData[] events,
             ILogger log)
