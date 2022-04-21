@@ -12,6 +12,8 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.OpenApi.Models;
 using Test.BLL;
 using Microsoft.Azure.Cosmos;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Test.API.HTTP
 {
@@ -50,50 +52,52 @@ namespace Test.API.HTTP
             return new OkObjectResult(result);
         }
 
-        //[FunctionName("GetItemById")]
-        //public async Task<IActionResult> GetItemById(
-        //    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "item/{id}/{ItemCategory}")] HttpRequest request,
-        //    [CosmosDB(ConnectionStringSetting = "f39-cosmos-tutorial-string")] DocumentClient client,
-        //    string id,
-        //    string ItemCategory,
-        //    ILogger log)
-        //{
-        //    var itemRepository = new Repositories.ItemRepository(client);
-        //    var result = await itemRepository.GetByIdAsync(id, partitionKeys: new Dictionary<string, string>() { { "ItemCategory", ItemCategory } });
-        //    return new OkObjectResult(result);
-        //}
+        [FunctionName("GetItemById")]
+        [OpenApiOperation(operationId: "GetItemById", tags: new[] { "Item" })]
+        [OpenApiParameter("id", Type = typeof(string), In = ParameterLocation.Path)]
+        [OpenApiParameter("ItemCategory", Type = typeof(string), In = ParameterLocation.Path)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Item), Description = "The OK response")]
+        public async Task<IActionResult> GetItemById(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "item/{id}/{ItemCategory}")] HttpRequest request,
+            string id,
+            string ItemCategory,
+            ILogger log)
+        {
+            var itemSvc = new ItemService(new Repositories.ItemRepository(_client));
+            var result = await itemSvc.GetByIdAsync(id, new Dictionary<string, string>() { { "ItemCategory", ItemCategory } });
+            return new OkObjectResult(result);
+        }
 
-        //[FunctionName("DeleteItem")]
-        //public async Task<IActionResult> DeleteItem(
-        //    [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "item/{id}/{ItemCategory}")] HttpRequest request,
-        //    [CosmosDB(ConnectionStringSetting = "f39-cosmos-tutorial-string")] DocumentClient client,
-        //    string id,
-        //    string ItemCategory,
-        //    ILogger log)
-        //{
-        //    var itemRepository = new Repositories.ItemRepository(client);
-        //    await itemRepository.DeleteAsync(id, partitionKeys: new Dictionary<string, string>() { { "ItemCategory", ItemCategory } });
-        //    return new OkObjectResult("Item Deleted");
-        //}
+        [FunctionName("DeleteItem")]
+        [OpenApiOperation(operationId: "DeleteItem", tags: new[] { "Item" })]
+        [OpenApiParameter("id", Type = typeof(string), In = ParameterLocation.Path)]
+        [OpenApiParameter("ItemCategory", Type = typeof(string), In = ParameterLocation.Path)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+        public async Task<IActionResult> DeleteItem(
+            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "item/{id}/{ItemCategory}")] HttpRequest request,
+            string id,
+            string ItemCategory,
+            ILogger log)
+        {
+            var itemSvc = new ItemService(new Repositories.ItemRepository(_client));
+            var succeed = await itemSvc.DeleteAsync(id, new Dictionary<string, string>() { { "ItemCategory", ItemCategory } });
+            if (succeed)
+            {
+                return new OkObjectResult("Item Deleted");
+            }
+            return new OkObjectResult("Item Failed to Delete");
+        }
 
-        //[FunctionName("UpdateItem")]
-        //public async Task<IActionResult> UpdateItem(
-        //    [HttpTrigger(AuthorizationLevel.Function, "put", Route = "item")] HttpRequest request,
-        //    [CosmosDB(ConnectionStringSetting = "f39-cosmos-tutorial-string")] DocumentClient client,
-        //    ILogger log)
-        //{
-        //    string requestBody = new StreamReader(request.Body).ReadToEnd();
-        //    dynamic bodyPayload = JsonConvert.DeserializeObject(requestBody);
-        //    string ItemCategory = bodyPayload.ItemCategory;
-        //    string itemId = bodyPayload.ItemId;
-        //    var itemRepository = new Repositories.ItemRepository(client);
-        //    var documentItem = await itemRepository.GetByIdAsync(itemId, partitionKeys: new Dictionary<string, string>() { { "ItemCategory", ItemCategory } });
-        //    documentItem.ItemName = bodyPayload.ItemName;
-        //    documentItem.ItemPrice = bodyPayload.ItemPrice;
-        //    documentItem.ItemStock = bodyPayload.ItemStock;
-        //    var result = await itemRepository.UpdateAsync(itemId, documentItem);
-        //    return new OkObjectResult(documentItem);
-        //}
+        [FunctionName("UpdateItem")]
+        public async Task<IActionResult> UpdateItem(
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "item")] HttpRequest request,
+            ILogger log)
+        {
+            string requestBody = new StreamReader(request.Body).ReadToEnd();
+            var itemSvc = new ItemService(new Repositories.ItemRepository(_client));
+            var res = await itemSvc.UpdateAsync(requestBody);
+            return new OkObjectResult(res);
+        }
 
         //[FunctionName("UpdateItemStock")]
         //public async Task<IActionResult> UpdateItemStock(
@@ -157,6 +161,6 @@ namespace Test.API.HTTP
         //    return new OkObjectResult(result);
         //}
 
-        
+
     }
 }
