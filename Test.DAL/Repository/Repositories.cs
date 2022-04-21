@@ -1,11 +1,12 @@
-﻿using Microsoft.Azure.Documents.Client;
+﻿using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Documents.Client;
 using Nexus.Base.CosmosDBRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Test.API.HTTP.Models;
+using Test.DAL.Models;
 
-namespace Test.API.HTTP.Repository
+namespace Test.DAL.Repository
 {
     public class Repositories
     {
@@ -14,14 +15,14 @@ namespace Test.API.HTTP.Repository
 
         public class ItemRepository: DocumentDBRepository<Item>
         {
-            public ItemRepository(DocumentClient client): base("tutorial", client, partitionProperties: "ItemCategory", eventGridEndPoint: _eventGridEndPoint, eventGridKey: _eventGridKey)
+            public ItemRepository(CosmosClient client): base("tutorial", client, partitionProperties: "ItemCategory", eventGridEndPoint: _eventGridEndPoint, eventGridKey: _eventGridKey)
             {
 
             }
         }
         public class OrdersRepository : DocumentDBRepository<Orders>
         {
-            public OrdersRepository(DocumentClient client): base("tutorial", client, partitionProperties: "OrderCategory", eventGridEndPoint: _eventGridEndPoint, eventGridKey: _eventGridKey)
+            public OrdersRepository(CosmosClient client): base("tutorial", client, partitionProperties: "OrderCategory", eventGridEndPoint: _eventGridEndPoint, eventGridKey: _eventGridKey)
             {
 
             }

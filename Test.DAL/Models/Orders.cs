@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Test.API.HTTP.Models
+namespace Test.DAL.Models
 {
     public class OrderItem
     {
